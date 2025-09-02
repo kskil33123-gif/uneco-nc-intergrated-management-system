@@ -3,11 +3,12 @@ import React from 'react';
 import { Node } from 'reactflow';
 import { ProcessNodeData, ProcessStatus } from '../types';
 import { AnimatePresence, motion } from 'framer-motion';
-import { STATUS_STYLES } from '../constants';
+import { STATUS_STYLES, TruckIcon } from '../constants';
 
 interface NodeDetailModalProps {
   node: Node<ProcessNodeData>;
   onClose: () => void;
+  onConfirm: (nodeId: string) => void;
 }
 
 const statusText: Record<ProcessStatus, string> = {
@@ -20,16 +21,21 @@ const statusText: Record<ProcessStatus, string> = {
 const DetailRow: React.FC<{ label: string; value?: string | number }> = ({ label, value }) => {
     if (!value) return null;
     return (
-        <div className="grid grid-cols-3 gap-4 py-2 border-b border-slate-700">
+        <div className="grid grid-cols-3 gap-4 py-3 border-b border-slate-700/50">
             <dt className="text-sm font-medium text-slate-400">{label}</dt>
             <dd className="text-sm text-slate-200 col-span-2">{value}</dd>
         </div>
     );
 };
 
-export const NodeDetailModal: React.FC<NodeDetailModalProps> = ({ node, onClose }) => {
+export const NodeDetailModal: React.FC<NodeDetailModalProps> = ({ node, onClose, onConfirm }) => {
   const { data } = node;
   const { icon } = STATUS_STYLES[data.status];
+
+  const handleConfirm = () => {
+    onConfirm(node.id);
+    onClose();
+  };
 
   return (
     <AnimatePresence>
@@ -51,9 +57,9 @@ export const NodeDetailModal: React.FC<NodeDetailModalProps> = ({ node, onClose 
                 <div className="p-6 border-b border-slate-700 flex justify-between items-center">
                     <div>
                         <h2 className="text-xl font-bold text-white">{data.label}</h2>
-                        <div className="flex items-center text-sm mt-1">
+                        <div className={`flex items-center text-sm mt-1 ${data.isAwaitingConfirmation ? 'text-indigo-400 font-semibold' : 'text-slate-300'}`}>
                             {icon}
-                            <span className="ml-2 text-slate-300">{statusText[data.status]}</span>
+                            <span className="ml-2">{data.isAwaitingConfirmation ? '사용자 확인 대기' : statusText[data.status]}</span>
                         </div>
                     </div>
                      <button onClick={onClose} className="text-slate-400 hover:text-white transition-colors rounded-full p-1 focus:outline-none focus:ring-2 focus:ring-indigo-500">
@@ -64,14 +70,25 @@ export const NodeDetailModal: React.FC<NodeDetailModalProps> = ({ node, onClose 
                 </div>
                 <div className="p-6">
                     <dl>
-                        <DetailRow label="현재 수량" value={data.currentQuantity ? `${data.currentQuantity.toLocaleString()} kg` : 'N/A'} />
-                        <DetailRow label="총 수량" value={data.totalQuantity ? `${data.totalQuantity.toLocaleString()} kg` : 'N/A'} />
+                        <DetailRow label="현재 수량" value={data.currentQuantity ? `${data.currentQuantity.toLocaleString()} kg` : undefined} />
+                        <DetailRow label="총 수량" value={data.totalQuantity ? `${data.totalQuantity.toLocaleString()} kg` : undefined} />
                         <DetailRow label="담당자" value={data.responsiblePerson} />
                         <DetailRow label="위치" value={data.location} />
                         <DetailRow label="시작 시간" value={data.startTime} />
                         <DetailRow label="완료 시간" value={data.completedTime} />
                         <DetailRow label="참고" value={data.notes} />
                     </dl>
+                    {data.isAwaitingConfirmation && data.confirmationLabel && (
+                        <div className="mt-6">
+                            <button
+                                onClick={handleConfirm}
+                                className="w-full flex items-center justify-center px-4 py-3 font-bold text-white bg-indigo-600 rounded-lg hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-indigo-500 transition-all duration-200 transform hover:scale-105"
+                            >
+                                <TruckIcon className="h-5 w-5 mr-2" />
+                                {data.confirmationLabel}
+                            </button>
+                        </div>
+                    )}
                 </div>
             </motion.div>
         </motion.div>

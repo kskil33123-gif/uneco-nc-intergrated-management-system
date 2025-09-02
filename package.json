@@ -10,9 +10,10 @@
   },
   "dependencies": {
     "react": "^19.1.1",
-    "framer-motion": "11.2.12",
-    "reactflow": "11.11.4",
-    "react-dom": "^19.1.1"
+    "react-dom": "^19.1.1",
+    "framer-motion": "11.2.10",
+    "reactflow": "11.11.3",
+    "firebase": "^12.2.1"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",

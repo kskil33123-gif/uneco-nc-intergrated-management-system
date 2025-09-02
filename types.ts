@@ -12,6 +12,9 @@ export interface ProcessNodeData {
   responsiblePerson?: string;
   location?: string;
   notes?: string;
+  requiresManualConfirmation?: boolean;
+  isAwaitingConfirmation?: boolean;
+  confirmationLabel?: string;
 }
 
 export interface Kpi {
@@ -27,4 +30,6 @@ export interface Alert {
   type: 'approval' | 'issue' | 'warning';
   message: string;
   timestamp: string;
+  action?: () => void;
+  actionLabel?: string;
 }

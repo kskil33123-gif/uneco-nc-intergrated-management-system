@@ -30,11 +30,11 @@ export const STATUS_STYLES: Record<ProcessStatus, { icon: JSX.Element, color: st
 
 export const INITIAL_NODES: Node<ProcessNodeData>[] = [
     { id: '1', type: 'custom', position: { x: 50, y: 150 }, data: { label: '유네코 원료 출고', status: 'completed', currentQuantity: 50000, totalQuantity: 50000, responsiblePerson: '김유신', location: '유네코 제1공장' } },
-    { id: '2', type: 'custom', position: { x: 300, y: 150 }, data: { label: '엔씨산업 입고', status: 'in_progress', currentQuantity: 49850, totalQuantity: 50000, responsiblePerson: '이순신', location: '엔씨산업 입고장' } },
+    { id: '2', type: 'custom', position: { x: 300, y: 150 }, data: { label: '엔씨산업 입고', status: 'in_progress', currentQuantity: 49850, totalQuantity: 50000, responsiblePerson: '이순신', location: '엔씨산업 입고장', requiresManualConfirmation: true, confirmationLabel: '입고 확인' } },
     { id: '3', type: 'custom', position: { x: 550, y: 150 }, data: { label: '야적장 보관', status: 'pending' } },
     { id: '4', type: 'custom', position: { x: 800, y: 150 }, data: { label: '설비 투입/선별', status: 'pending' } },
     { id: '5', type: 'custom', position: { x: 1050, y: 150 }, data: { label: '완제품 보관', status: 'pending' } },
-    { id: '6', type: 'custom', position: { x: 1300, y: 150 }, data: { label: '제품 출고', status: 'pending' } },
+    { id: '6', type: 'custom', position: { x: 1300, y: 150 }, data: { label: '제품 출고', status: 'pending', requiresManualConfirmation: true, confirmationLabel: '최종 출고 승인' } },
 ];
 
 export const INITIAL_EDGES: Edge[] = [
@@ -106,4 +106,12 @@ export function BellIcon(props: React.SVGProps<SVGSVGElement>) {
             <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
         </svg>
     );
+}
+
+export function TruckIcon(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" {...props}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.125-.504 1.125-1.125V14.25m-17.25 4.5v-9m17.25 9v-9m-9-4.5H3.375a1.125 1.125 0 00-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H12.75z" />
+    </svg>
+  );
 }

@@ -3,7 +3,7 @@ import React from 'react';
 import { KpiCard } from './KpiCard';
 import { AlertCenter } from './AlertCenter';
 import FlowDiagram from './FlowDiagram';
-import { CompanyView } from '../types';
+import { CompanyView, Alert } from '../types';
 import { UNECO_KPIS, NC_INDUSTRY_KPIS, MOCK_ALERTS } from '../constants';
 import { useProcessData } from '../hooks/useProcessData';
 import { motion } from 'framer-motion';
@@ -13,7 +13,7 @@ interface DashboardProps {
 }
 
 export const Dashboard: React.FC<DashboardProps> = ({ companyView }) => {
-  const { nodes, setNodes, edges, setEdges } = useProcessData();
+  const { nodes, setNodes, edges, setEdges, confirmStep, startShippingProcess } = useProcessData();
   const kpis = companyView === 'uneco' ? UNECO_KPIS : NC_INDUSTRY_KPIS;
   
   const containerVariants = {
@@ -31,6 +31,22 @@ export const Dashboard: React.FC<DashboardProps> = ({ companyView }) => {
     visible: { y: 0, opacity: 1 }
   };
 
+  const productStorageNode = nodes.find(n => n.id === '5');
+  const shippingNode = nodes.find(n => n.id === '6');
+
+  const alerts: Alert[] = [...MOCK_ALERTS];
+
+  if (productStorageNode?.data.status === 'completed' && shippingNode?.data.status === 'pending') {
+    alerts.unshift({
+      id: 'new-order-alert',
+      type: 'approval',
+      message: '유네코 신규 발주. 출고를 준비하세요.',
+      timestamp: '방금',
+      action: startShippingProcess,
+      actionLabel: '출고 준비'
+    });
+  }
+
   return (
     <div className="space-y-6">
       <motion.div 
@@ -39,7 +55,13 @@ export const Dashboard: React.FC<DashboardProps> = ({ companyView }) => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <FlowDiagram nodes={nodes} setNodes={setNodes} edges={edges} setEdges={setEdges} />
+        <FlowDiagram 
+            nodes={nodes} 
+            setNodes={setNodes} 
+            edges={edges} 
+            setEdges={setEdges}
+            onConfirmStep={confirmStep}
+        />
       </motion.div>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <motion.div 
@@ -59,7 +81,7 @@ export const Dashboard: React.FC<DashboardProps> = ({ companyView }) => {
             initial="hidden"
             animate="visible"
         >
-            <AlertCenter alerts={MOCK_ALERTS} />
+            <AlertCenter alerts={alerts} />
         </motion.div>
       </div>
     </div>

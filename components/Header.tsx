@@ -5,9 +5,11 @@ import { CompanyView } from '../types';
 interface HeaderProps {
   currentView: CompanyView;
   setView: (view: CompanyView) => void;
+  userEmail: string | null;
+  onLogout: () => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ currentView, setView }) => {
+export const Header: React.FC<HeaderProps> = ({ currentView, setView, userEmail, onLogout }) => {
   const commonButtonClasses = "px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-900 focus:ring-indigo-500";
   const activeButtonClasses = "bg-indigo-600 text-white shadow-md";
   const inactiveButtonClasses = "bg-slate-700 text-slate-300 hover:bg-slate-600";
@@ -22,19 +24,27 @@ export const Header: React.FC<HeaderProps> = ({ currentView, setView }) => {
           유네코-엔씨산업 통합 관리 시스템
         </h1>
       </div>
-      <div className="flex items-center space-x-2 bg-slate-800 p-1 rounded-lg">
-        <button
-          onClick={() => setView('uneco')}
-          className={`${commonButtonClasses} ${currentView === 'uneco' ? activeButtonClasses : inactiveButtonClasses}`}
-        >
-          유네코
-        </button>
-        <button
-          onClick={() => setView('nc_industry')}
-          className={`${commonButtonClasses} ${currentView === 'nc_industry' ? activeButtonClasses : inactiveButtonClasses}`}
-        >
-          엔씨산업
-        </button>
+      <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-2 bg-slate-800 p-1 rounded-lg">
+            <button
+              onClick={() => setView('uneco')}
+              className={`${commonButtonClasses} ${currentView === 'uneco' ? activeButtonClasses : inactiveButtonClasses}`}
+            >
+              유네코
+            </button>
+            <button
+              onClick={() => setView('nc_industry')}
+              className={`${commonButtonClasses} ${currentView === 'nc_industry' ? activeButtonClasses : inactiveButtonClasses}`}
+            >
+              엔씨산업
+            </button>
+        </div>
+        <div className="flex items-center space-x-3">
+            <span className="text-sm text-slate-400">{userEmail}</span>
+            <button onClick={onLogout} className="px-3 py-2 text-sm font-medium text-slate-300 bg-slate-700 rounded-md hover:bg-red-500 hover:text-white transition-colors">
+                로그아웃
+            </button>
+        </div>
       </div>
     </header>
   );

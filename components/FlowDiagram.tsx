@@ -25,7 +25,7 @@ const CustomNode: React.FC<NodeProps<ProcessNodeData>> = ({ data }) => {
   
   return (
     <motion.div 
-      className={`w-48 p-3 rounded-lg shadow-md border-2 ${color} backdrop-blur-sm transition-all duration-300 hover:shadow-indigo-500/30 hover:border-indigo-500`}
+      className={`w-48 p-3 rounded-lg shadow-md border-2 ${color} ${data.isAwaitingConfirmation ? 'ring-2 ring-offset-2 ring-offset-slate-900 ring-indigo-500' : ''} backdrop-blur-sm transition-all duration-300 hover:shadow-indigo-500/30 hover:border-indigo-500`}
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.3 }}
@@ -53,9 +53,10 @@ interface FlowDiagramProps {
   setNodes: Dispatch<SetStateAction<Node<ProcessNodeData>[]>>;
   edges: Edge[];
   setEdges: Dispatch<SetStateAction<Edge[]>>;
+  onConfirmStep: (nodeId: string) => void;
 }
 
-const FlowDiagram: React.FC<FlowDiagramProps> = ({ nodes, setNodes, edges, setEdges }) => {
+const FlowDiagram: React.FC<FlowDiagramProps> = ({ nodes, setNodes, edges, setEdges, onConfirmStep }) => {
   const nodeTypes = useMemo(() => ({ custom: CustomNode }), []);
   const [selectedNode, setSelectedNode] = useState<Node<ProcessNodeData> | null>(null);
 
@@ -84,7 +85,7 @@ const FlowDiagram: React.FC<FlowDiagramProps> = ({ nodes, setNodes, edges, setEd
           <Background color="#475569" gap={16} />
         </ReactFlow>
         {selectedNode && (
-            <NodeDetailModal node={selectedNode} onClose={() => setSelectedNode(null)} />
+            <NodeDetailModal node={selectedNode} onClose={() => setSelectedNode(null)} onConfirm={onConfirmStep} />
         )}
     </>
   );
